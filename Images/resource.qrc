@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="Images">
+    <file>Analog Icon.png</file>
+    <file>Switch.png</file>
+    <file>Test Picture 2.png</file>
+  </qresource>
+</RCC>
