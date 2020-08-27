@@ -7,11 +7,13 @@ from SwMuxTool_ui import Ui_MainWindow
 
 # Defining a product class for easier product search
 class Product:
-    def __init__(self, name, inputCombinationsDictionary, url, description):
+    def __init__(self, name, inputCombinationsDictionary, url, description, third_property):
         self.name = name # String
         self.inputCombinationsDictionary = inputCombinationsDictionary
         self.url = url 
         self.description = description
+        self.third_property = third_property # This should be 0 by default.
+            # There's a Product third_property in case a third_input combo box is used.
 
         ## A sample inputCombinationsDictionary would look like this:
         # inputCombinationsDictionary = {
@@ -26,7 +28,7 @@ class Product:
 class Ui(QtWidgets.QMainWindow):
    
     global x,y,z,answer,d,t,label1 #[,,, answer string, description string, test circuit #, label string]
-    x = 0;    y = 0;    z = 0;    t = 0
+    x = 0;    y = 0;    z = 0;    t = 0;    third_input = 0
     answer = ""; d = ""; label1 = ""; label2=""
 
         
@@ -51,7 +53,8 @@ class Ui(QtWidgets.QMainWindow):
                     "+12": (0.8, 2.0),
                 }, # See this comma.
                 url = "https://www.analog.com/en/products/adg1411.html",
-                description = "1.5 \u2126  On Resistance \n \u00b115 V/+12 V/\u00b15 V, iCMOS\n Quad SPST Switches"
+                description = "1.5 \u2126  On Resistance \n \u00b115 V/+12 V/\u00b15 V, iCMOS\n Quad SPST Switches",
+                third_property = 0, # Set a 0 by default
             ), # Parameters must be separated by comma.
             Product(
                 name = "ADG161X",
@@ -64,7 +67,8 @@ class Ui(QtWidgets.QMainWindow):
                     # with a y of 0.8V max and 2.0V min.
                 },
                 url = "https://www.analog.com/en/products/adg1611.html", 
-                description = "1 \u2126 Typical On Resistance,\n \u00b15 V/ +12 V/ +5 V/ +3.3 V \n Quad SPST Switches"
+                description = "1 \u2126 Typical On Resistance,\n \u00b15 V/ +12 V/ +5 V/ +3.3 V \n Quad SPST Switches",
+                third_property = 0, 
             ),
             Product(
                 name = "ADG61X",
@@ -74,7 +78,8 @@ class Ui(QtWidgets.QMainWindow):
                     "+5": (0.8, 2.4),
                 },
                 url = "https://www.analog.com/en/products/adg1611.html", 
-                description = "1 \u2126 Typical On Resistance,\n \u00b15 V/ +12 V/ +5 V/ +3.3 V \n Quad SPST Switches"
+                description = "1 \u2126 Typical On Resistance,\n \u00b15 V/ +12 V/ +5 V/ +3.3 V \n Quad SPST Switches",
+                third_property = 0, 
             ),                     
         ]
         
@@ -87,6 +92,10 @@ class Ui(QtWidgets.QMainWindow):
         
         self.comboDigital = self.findChild(QtWidgets.QComboBox, 'comboDigital') # Find [Digital Input Range] combobox
         self.comboDigital.activated.connect(self.comboDigitalChanged)
+
+        # Third option
+        self.comboThird = self.findChild(QtWidgets.QComboBox, 'comboThird') # Find [Third Input Option] combobox
+        self.comboThird.activated.connect(self.comboThirdChanged)
         
         self.btnFind = self.findChild(QtWidgets.QPushButton, 'btnFind') # Find [Find Switch] button
         self.btnFind.clicked.connect(self.btnFindPressed)
@@ -131,9 +140,18 @@ class Ui(QtWidgets.QMainWindow):
         d = ""
         self.lblDescription.setText(d)
         return y   
+
+    def comboThirdChanged(self, valueT): #get value of [Third Input Option] combobox
+        global third_input
+        print("Third input changed", valueT)
+        third_input = valueT
+        self.lblAnswer.setText("No Product Selected Yet") #changing answer to default when an input changed
+        d = ""
+        self.lblDescription.setText(d)
+        return third_input 
     
     def btnFindPressed(self): # Function when Find is Pressed
-        global x, y, z, answer, label, d
+        global x, y, z, answer, label, d, third_input
         # \u00b1 is ± ; \u2126 is Ω
 
         print("Clearing self.matchedProductsList...")
@@ -142,6 +160,11 @@ class Ui(QtWidgets.QMainWindow):
         
         answer = "" # Clear answer
         d = "" # Clear description
+
+        # Comment this out when you will be considering/enabling a third input. 
+        third_input = 0 # Set this as 0 by default. All products were given third_property equal to 0. 
+            # This is to make (third_input == product.third_property) evaluate as True,
+            # to make it as if we're ignoring the third condition. It's always True.
 
         # Define dictionary for converting numerical x and y to string equivalent.
         analogInputRangeDictionary = {
@@ -161,6 +184,19 @@ class Ui(QtWidgets.QMainWindow):
         # Find the product using x and y in the productList
         # using a for loop, traversing over each productList elements.
         for product in self.productList:
+            
+            try:
+                # Check third input condition 
+                if product.third_property != third_input: # If the third condition is different...
+                    continue # ...proceed to the next product,
+                        # or skip the code below, because there's no need to compare...
+                        # ...the other two, the x and y.
+            except NameError: # Third input is not changed, not selected, or not defined.
+                answer = "Please select input values"
+                z = 0
+                d = ""
+                return # Exit function. No need to continue.
+
             convertedX = analogInputRangeDictionary.get(x)
             print("convertedX: " + str(convertedX))
 
@@ -267,17 +303,46 @@ class Ui(QtWidgets.QMainWindow):
     
     def btnGeneratePressed(self, valueL): # Function when Generate is Pressed
         global t,z
+                
+        progamLocationFolder = os.path.abspath(".") # This is where this program is located.
+
         if (z != 0):
             if (t != 0):
                 # file = open(r"C:/Users/K55VJ/Desktop/Work/SwMuxTool/TestCircuits/TestCircuits.asc","r")
-                os.startfile('C:/Users/K55VJ/Desktop/Work/SwMuxTool/TestCircuits/TestCircuits.asc')
-                print ("Opening LTspice")
+                # os.startfile('C:/Users/K55VJ/Desktop/Work/SwMuxTool/TestCircuits/TestCircuits.asc')
+                # testCircuitFile = progamLocationFolder + "/TestCircuits/TestCircuits.asc"
+                # print ("Opening LTspice")
+
+                testFile = self.resource_path("Resources/Hello mic.txt")                     
+                # testFile = self.resource_path("Resources/unknownTestFile")                     
+                
+                print("Opening file: " + testFile)
+
+                if os.path.exists(testFile):
+                    # Try opening the file
+                    try:
+                        os.startfile(testFile) 
+                    except OSError:
+                        print("No application is associated to open the selected file: " + testFile)
+                else:
+                    print("File does not exist: " + testFile)
+
+
             else:
                 print ("Select Test Circuit")
         else: 
             print("No Product Selected Yet")
             
+    def resource_path(self, relative_path):
+        """ Get absolute path to resource when running the exe made by PyInstaller """
+        try:
+            # PyInstaller creates a temp folder for resources and stores path in _MEIPASS
+            base_path = sys._MEIPASS # Try to access resource location as in running the distributed exe.
+        except Exception: 
+            base_path = os.path.abspath(".") # But if the program is not running as an exe,
+                # rather as in running the source code during development.
 
+        return os.path.join(base_path, relative_path)
 
 
 # Main script beginning

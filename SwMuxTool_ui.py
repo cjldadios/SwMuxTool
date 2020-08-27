@@ -59,6 +59,29 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.btnExit.setFont(font)
         self.btnExit.setObjectName("btnExit")
+
+
+
+        # Third option
+        self.comboThird = QtWidgets.QComboBox(self.centralwidget)
+        self.comboThird.setGeometry(QtCore.QRect(10, 190, 231, 31))
+            # rectangle = QRect(x, y, w, h);
+            # where, from the upper left window coner, x is the x-axis to the right,
+            # y is the y-axis downward, w and h is the rectangle width and height 
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman") # 
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.comboThird.setFont(font)
+        self.comboThird.setObjectName("comboThird")
+        self.comboThird.addItem("")
+        self.comboThird.addItem("")
+        self.comboThird.addItem("")
+        # Uncomment this line to enable the third option combo box
+        self.comboThird.hide()
+
+
         self.comboAnalog = QtWidgets.QComboBox(self.centralwidget)
         self.comboAnalog.setGeometry(QtCore.QRect(10, 60, 231, 31))
         font = QtGui.QFont()
@@ -75,6 +98,8 @@ class Ui_MainWindow(object):
         self.comboAnalog.addItem("")
         self.comboAnalog.addItem("")
         self.comboAnalog.addItem("")
+
+
         self.btnGenerate = QtWidgets.QPushButton(self.centralwidget)
         self.btnGenerate.setGeometry(QtCore.QRect(350, 260, 171, 31))
         font = QtGui.QFont()
@@ -174,6 +199,7 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+       
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -194,6 +220,13 @@ class Ui_MainWindow(object):
         self.comboDigital.setItemText(0, _translate("MainWindow", "Control Input Range"))
         self.comboDigital.setItemText(1, _translate("MainWindow", "Max 0.8 V & Min 2.0 V"))
         self.comboDigital.setItemText(2, _translate("MainWindow", "Max 0.8 V & Min 2.4 V"))
+
+        # Third option
+        self.comboThird.setItemText(0, _translate("MainWindow", "Third Input Option"))
+        self.comboThird.setItemText(1, _translate("MainWindow", "Option 1"))
+        self.comboThird.setItemText(2, _translate("MainWindow", "Option 2"))
+        self.comboThird.setItemText(3, _translate("MainWindow", "Option 3"))
+
         self.comboTest.setItemText(0, _translate("MainWindow", " (Select Test Circuit)"))
         self.comboTest.setItemText(1, _translate("MainWindow", " On Resistance"))
         self.comboTest.setItemText(2, _translate("MainWindow", " Off Leakage"))

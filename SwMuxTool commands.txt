@@ -1,3 +1,7 @@
 python -m PyQt5.uic.pyuic -x [FILENAME].ui -o [FILENAME].py # Convert ui to py
 pyrcc5 -o resource_rc.py Images/resource.qrc # Convert qrc to py
-pyinstaller --noconsole --onefile SwMuxTool.py # Create one executable
+
+pyinstaller --noconsole --onefile --add-data="Resources;Resources" SwMuxTool.py
+	# Create one executable
+	# semi-colon for Windows, colon for Mac/Linux
+	# --add-data="<resources folder during developent runtime>;<resources destination folder when running exe>"

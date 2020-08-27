@@ -4,9 +4,9 @@ block_cipher = None
 
 
 a = Analysis(['SwMuxTool.py'],
-             pathex=['C:\\Users\\Toshiba\\Documents\\Codes\\SwMuxTool'],
+             pathex=['C:\\Users\\Toshiba\\Documents\\GitHub\\SwMuxTool'],
              binaries=[],
-             datas=[],
+             datas=[('Resources', 'Resources')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -30,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True )
+          console=False )
