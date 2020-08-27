@@ -140,8 +140,8 @@ class Ui(QtWidgets.QMainWindow):
         self.matchedProductsList = [] # Reset list of selected/found products because we're searching again.
         print("self.matchedProductsList: " + str(self.matchedProductsList))
         
-        # Clear answer
-        answer = ""
+        answer = "" # Clear answer
+        d = "" # Clear description
 
         # Define dictionary for converting numerical x and y to string equivalent.
         analogInputRangeDictionary = {
@@ -205,6 +205,7 @@ class Ui(QtWidgets.QMainWindow):
             # Also, edit product descriptop here by appending each...
             d += product.description + " \n" # ...of the selected product's description.
 
+        print("description: " + d)
 
         if x*y == 0: #if one input is unchanged from default
                 answer = "Please select input values"
